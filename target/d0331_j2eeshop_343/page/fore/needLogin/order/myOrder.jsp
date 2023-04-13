@@ -71,7 +71,7 @@
                         ;width: 300px;margin-bottom: 50px;padding-bottom: 5px">
                             <div style="margin-left: 5px">
                                 <p><b>订单编号:</b>${order.orderCode}</p>
-                                <span>创建时间:${order.createDate}</span>
+                                <p><b>创建时间:</b>${order.createDate}</p>
                                 <p><b>商品信息:</b></p>
                                 <c:forEach items="${order.orderItems}" var="orderItem" varStatus="st">
                                     <div style="border-bottom: black dashed 1px;">
@@ -88,7 +88,7 @@
                                 <p><b>商品总数量:</b>${order.totalNumber}</p>
                                 <p><b>总计金额:</b>${order.total}</p>
                                 <p><b>订单状态:</b>${order.status}</p>
-                                <span>更新时间:${order.gmtModified}</span>
+                                <p><b>更新时间:</b>${order.gmtModified}</p>
                             </div>
                             <div style="display: flex;justify-content: space-between;margin-left: 5px;width: 290px">
                                 <c:if test="${order.status eq '待支付'}">

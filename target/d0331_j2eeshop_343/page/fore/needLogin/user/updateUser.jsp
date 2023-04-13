@@ -24,7 +24,7 @@
                             <a href="/fore_homePage_list">首页</a>
                         </li>
                         <li>
-                            <a href="#"> 欢迎您，${foreUser.name}</a>
+                            <a href="/page/fore/needLogin/user/updateUser.jsp"> 欢迎您，${foreUser.name}</a>
                         </li>
                         <li>
                             <a href="/fore_foreUser_exitLogin">退出</a>
