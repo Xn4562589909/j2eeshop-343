@@ -95,7 +95,7 @@ public class ReviewDAOImpl implements ReviewDAO {
                 user.setId(rs.getInt("uid"));
                 review.setUser(user);
                 review.setProduct(productDAO.get(rs.getInt("pid")));
-                review.setCreateDate(new Timestamp(rs.getTimestamp("createDate").getTime()));
+                review.setCreateDate(DateUtil.getTime(rs.getTimestamp("createDate")));
                 review.setGmtModified(DateUtil.getTime(rs.getTimestamp("gmt_modified")));
             }
         }catch (SQLException e){
@@ -127,7 +127,7 @@ public class ReviewDAOImpl implements ReviewDAO {
                 user.setId(rs.getInt("uid"));
                 review.setUser(user);
                 review.setProduct(productDAO.get(rs.getInt("pid")));
-                review.setCreateDate(new Timestamp(rs.getTimestamp("createDate").getTime()));
+                review.setCreateDate(DateUtil.getTime(rs.getTimestamp("createDate")));
                 review.setGmtModified(DateUtil.getTime(rs.getTimestamp("gmt_modified")));
                 list.add(review);
             }
@@ -173,7 +173,7 @@ public class ReviewDAOImpl implements ReviewDAO {
                 user.setId(rs.getInt("uid"));
                 review.setUser(user);
                 review.setProduct(productDAO.get(pid));
-                review.setCreateDate(new Timestamp(rs.getTimestamp("createDate").getTime()));
+                review.setCreateDate(DateUtil.getTime(rs.getTimestamp("createDate")));
                 review.setGmtModified(DateUtil.getTime(rs.getTimestamp("gmt_modified")));
                 list.add(review);
             }

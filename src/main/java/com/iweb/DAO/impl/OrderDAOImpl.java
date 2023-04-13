@@ -118,7 +118,7 @@ public class OrderDAOImpl implements OrderDAO {
                 order.setReceiver(rs.getString("receiver"));
                 order.setMobile(rs.getString("mobile"));
                 order.setUserMessage(rs.getString("userMessage"));
-                order.setCreateDate(rs.getTimestamp("createDate"));
+                order.setCreateDate(DateUtil.getTime(rs.getTimestamp("createDate")));
                 order.setPayDate(rs.getTimestamp("payDate"));
                 order.setDeliveryDate(rs.getTimestamp("deliveryDate"));
                 order.setConfirmDate(rs.getTimestamp("confirmDate"));
@@ -155,7 +155,7 @@ public class OrderDAOImpl implements OrderDAO {
                 order.setReceiver(rs.getString("receiver"));
                 order.setMobile(rs.getString("mobile"));
                 order.setUserMessage(rs.getString("userMessage"));
-                order.setCreateDate(rs.getTimestamp("createDate"));
+                order.setCreateDate(DateUtil.getTime(rs.getTimestamp("createDate")));
                 order.setPayDate(rs.getTimestamp("payDate"));
                 order.setDeliveryDate(rs.getTimestamp("deliveryDate"));
                 order.setConfirmDate(rs.getTimestamp("confirmDate"));
@@ -199,7 +199,7 @@ public class OrderDAOImpl implements OrderDAO {
                 order.setReceiver(rs.getString("receiver"));
                 order.setMobile(rs.getString("mobile"));
                 order.setUserMessage(rs.getString("userMessage"));
-                order.setCreateDate(rs.getTimestamp("createDate"));
+                order.setCreateDate(DateUtil.getTime(rs.getTimestamp("createDate")));
                 order.setPayDate(rs.getTimestamp("payDate"));
                 order.setDeliveryDate(rs.getTimestamp("deliveryDate"));
                 order.setConfirmDate(rs.getTimestamp("confirmDate"));
@@ -229,7 +229,7 @@ public class OrderDAOImpl implements OrderDAO {
                 order.setReceiver(rs.getString("receiver"));
                 order.setMobile(rs.getString("mobile"));
                 order.setUserMessage(rs.getString("userMessage"));
-                order.setCreateDate(rs.getTimestamp("createDate"));
+                order.setCreateDate(DateUtil.getTime(rs.getTimestamp("createDate")));
                 order.setPayDate(rs.getTimestamp("payDate"));
                 order.setDeliveryDate(rs.getTimestamp("deliveryDate"));
                 order.setConfirmDate(rs.getTimestamp("confirmDate"));

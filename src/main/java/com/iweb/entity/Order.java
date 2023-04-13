@@ -14,7 +14,7 @@ public class Order {
     private String receiver;
     private String mobile;
     private String userMessage;
-    private Date createDate;
+    private String createDate;
     private Date payDate;
     private Date deliveryDate;
     private Date confirmDate;

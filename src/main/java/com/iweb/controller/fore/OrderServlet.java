@@ -93,9 +93,8 @@ public class OrderServlet extends BaseForeServlet {
             products.add(oi.getProduct());
         }
         req.setAttribute("orderId",id);
-        req.setAttribute("productsComment",products);
-        if (null==req.getSession().getAttribute("pSize")){
-            req.getSession().setAttribute("pSize",products.size());
+        if (null==req.getSession().getAttribute("productsComment")){
+            req.getSession().setAttribute("productsComment",products);
         }
         return "/page/fore/needLogin/review/commentProduct.jsp";
     }

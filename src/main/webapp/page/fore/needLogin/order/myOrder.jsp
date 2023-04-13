@@ -71,10 +71,16 @@
                         ;width: 300px;margin-bottom: 50px;padding-bottom: 5px">
                             <div style="margin-left: 5px">
                                 <p><b>订单编号:</b>${order.orderCode}</p>
+                                <p><b>创建时间:</b>${order.createDate}</p>
                                 <p><b>商品信息:</b></p>
                                 <c:forEach items="${order.orderItems}" var="orderItem" varStatus="st">
                                     <div style="border-bottom: black dashed 1px;">
-                                        <p><b>商品名称:</b>${orderItem.product.name}</p>
+                                        <p>
+                                            <b>商品名称:</b>
+                                            <a href="/fore_foreProduct_show?id=${orderItem.product.id}">
+                                                    ${orderItem.product.name}
+                                            </a>
+                                        </p>
                                         <p><b>商品价格:</b>${orderItem.product.promotePrice}</p>
                                         <p><b>购买数量:</b>${orderItem.number}</p>
                                     </div>
@@ -82,6 +88,7 @@
                                 <p><b>商品总数量:</b>${order.totalNumber}</p>
                                 <p><b>总计金额:</b>${order.total}</p>
                                 <p><b>订单状态:</b>${order.status}</p>
+                                <p><b>更新时间:</b>${order.gmtModified}</p>
                             </div>
                             <div style="display: flex;justify-content: space-between;margin-left: 5px;width: 290px">
                                 <c:if test="${order.status eq '待支付'}">

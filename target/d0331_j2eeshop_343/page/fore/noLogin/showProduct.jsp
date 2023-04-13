@@ -149,7 +149,8 @@
                         <c:if test="${reviews.size()!=0}">
                             <c:forEach items="${reviews}" var="r" varStatus="st">
                                 <div style="margin: 20px;font-size: 1.5rem">
-                                    <b>${r.user.name}：</b>${r.content}
+                                    <p><i>${r.createDate}</i></p>
+                                    <p><b>${r.user.name}：</b>${r.content}</p>
                                     <hr>
                                 </div>
                             </c:forEach>

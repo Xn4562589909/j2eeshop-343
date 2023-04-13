@@ -93,11 +93,4 @@
     </div>
 </div>
 </body>
-<script>
-    $("#submitBtn").click(function () {
-        if ($("#comment").val()!=""){
-            $("#submitBtn").parent().parent().parent().hide();
-        }
-    })
-</script>
 </html>
