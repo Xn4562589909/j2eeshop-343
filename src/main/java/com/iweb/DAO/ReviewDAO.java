@@ -28,4 +28,10 @@ public interface ReviewDAO extends BaseDAO<Review> {
      * @return 总数
      */
     int getTotal(int pid);
+
+    /** 根据用户id查询用户的所有评论
+     * @param uid 用户id
+     * @return 评论集合
+     */
+    List<Review> listUserReviews(int uid);
 }

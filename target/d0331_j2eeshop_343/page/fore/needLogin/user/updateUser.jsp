@@ -75,6 +75,22 @@
                 </tr>
                 </tbody>
             </table>
+            <ul class="list-inline list-unstyled">
+                <li>
+                    <a href="/fore_order_listOrder">我的订单</a>
+                </li>
+                <li>
+                    <a href="/fore_orderItem_shoppingCar">
+                        <span class="badge pull-right">${oiNum}</span>
+                        我的购物车
+                    </a>
+                </li>
+                <li>
+                    <a href="/fore_review_list">
+                        管理评价
+                    </a>
+                </li>
+            </ul>
         </div>
         <div class="col-md-6 column">
             <form role="form" action="/fore_foreUser_update">

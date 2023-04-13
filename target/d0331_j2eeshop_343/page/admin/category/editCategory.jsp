@@ -12,8 +12,8 @@
     <title>Title</title>
 </head>
 <body>
+<jsp:include page="../include/header.jsp" />
 <div class="container">
-    <jsp:include page="../include/header.jsp" />
     <div class="row clearfix">
         <div class="col-md-12 column">
             <form class="form-horizontal" role="form" action="/admin_category_update" method="post">

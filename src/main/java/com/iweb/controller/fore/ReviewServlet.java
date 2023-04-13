@@ -6,6 +6,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -51,5 +52,34 @@ public class ReviewServlet extends BaseForeServlet {
             req.getSession().setAttribute("productsComment",productsComment);
             return "@/fore_order_comment?orderId="+orderId;
         }
+    }
+
+    public String list(HttpServletRequest req,HttpServletResponse resp){
+        User user = (User) req.getSession().getAttribute("foreUser");
+        List<Review> reviews = reviewService.listUserReviews(user.getId());
+        req.setAttribute("reviews",reviews);
+        return "/page/fore/needLogin/review/listReview.jsp";
+    }
+
+    public String delete(HttpServletRequest req,HttpServletResponse resp){
+        int rid = Integer.parseInt(req.getParameter("id"));
+        reviewService.delete(rid);
+        return "%success";
+    }
+
+    public String edit(HttpServletRequest req,HttpServletResponse resp){
+        int rid = Integer.parseInt(req.getParameter("id"));
+        Review review = reviewService.get(rid);
+        req.setAttribute("review",review);
+        return "/page/fore/needLogin/review/editReview.jsp";
+    }
+
+    public String update(HttpServletRequest req,HttpServletResponse resp){
+        int rid = Integer.parseInt(req.getParameter("rid"));
+        String content = req.getParameter("content");
+        Review review = reviewService.get(rid);
+        review.setContent(content);
+        reviewService.update(review);
+        return "@/fore_review_list";
     }
 }

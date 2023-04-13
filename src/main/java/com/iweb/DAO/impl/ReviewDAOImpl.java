@@ -59,6 +59,7 @@ public class ReviewDAOImpl implements ReviewDAO {
             ps.setInt(2,review.getUser().getId());
             ps.setInt(3,review.getProduct().getId());
             ps.setString(4,review.getUser().getName());
+            ps.setInt(5,review.getId());
             ps.execute();
             updateTime(review.getId());
         }catch (SQLException e){
@@ -197,5 +198,31 @@ public class ReviewDAOImpl implements ReviewDAO {
             e.printStackTrace();
         }
         return count;
+    }
+
+    @Override
+    public List<Review> listUserReviews(int uid) {
+        String sql = "select * from review where uid="+uid;
+        List<Review> list = new ArrayList<>();
+        try(Connection c = JdbcUtil.getConnection();
+            PreparedStatement ps = c.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                Review review = new Review();
+                review.setId(rs.getInt("id"));
+                review.setContent(rs.getString("content"));
+                User user = new User();
+                user.setName(rs.getString("nickname"));
+                user.setId(rs.getInt("uid"));
+                review.setUser(user);
+                review.setProduct(productDAO.get(rs.getInt("pid")));
+                review.setCreateDate(DateUtil.getTime(rs.getTimestamp("createDate")));
+                review.setGmtModified(DateUtil.getTime(rs.getTimestamp("gmt_modified")));
+                list.add(review);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return list;
     }
 }
