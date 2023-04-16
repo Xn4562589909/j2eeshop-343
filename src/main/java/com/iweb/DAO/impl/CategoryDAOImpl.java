@@ -80,8 +80,8 @@ public class CategoryDAOImpl implements CategoryDAO {
                 category = new Category();
                 category.setId(id);
                 category.setName(rs.getString("name"));
-                category.setGmtCreate(DateUtil.getTime(rs.getTimestamp("gmt_create")));
-                category.setGmtModified(DateUtil.getTime(rs.getTimestamp("gmt_modified")));
+//                category.setGmtCreate(DateUtil.getTime(rs.getTimestamp("gmt_create")));
+//                category.setGmtModified(DateUtil.getTime(rs.getTimestamp("gmt_modified")));
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -107,8 +107,8 @@ public class CategoryDAOImpl implements CategoryDAO {
                 Category category = new Category();
                 category.setId(rs.getInt("id"));
                 category.setName(rs.getString("name"));
-                category.setGmtCreate(DateUtil.getTime(rs.getTimestamp("gmt_create")));
-                category.setGmtModified(DateUtil.getTime(rs.getTimestamp("gmt_modified")));
+//                category.setGmtCreate(DateUtil.getTime(rs.getTimestamp("gmt_create")));
+//                category.setGmtModified(DateUtil.getTime(rs.getTimestamp("gmt_modified")));
                 categoryList.add(category);
             }
         }catch (SQLException e){

@@ -1,12 +1,18 @@
 package com.iweb.service.impl;
 
-import com.iweb.DAO.*;
-import com.iweb.DAO.impl.*;
 import com.iweb.entity.Category;
 import com.iweb.entity.Product;
 import com.iweb.entity.ProductImage;
+import com.iweb.entity.PropertyValue;
+import com.iweb.mapper.*;
 import com.iweb.service.CategoryService;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -14,62 +20,149 @@ import java.util.List;
  * @date 2023/4/3 17:36
  */
 public class CategoryServiceImpl implements CategoryService {
-    CategoryDAO categoryDAO = new CategoryDAOImpl();
-    ProductDAO productDAO = new ProductDAOImpl();
-    ProductImageDAO productImageDAO = new ProductImageDAOImpl();
-    ReviewDAO reviewDAO = new ReviewDAOImpl();
-    OrderItemDAO orderItemDAO = new OrderItemDAOImpl();
+
+    // 定义配置文件路径
+
+    String resource = "mybatis-config.xml";
+    InputStream inputStream;
+    SqlSessionFactory sqlSessionFactory;
+    SqlSession session;
+    CategoryMapper categoryMapper;
+    ProductMapper productMapper;
+    ProductImageMapper productImageMapper;
+    OrderItemMapper orderItemMapper;
+    ReviewMapper reviewMapper;
+    PropertyValueMapper propertyValueMapper;
+
+    public void init() throws IOException {
+        // 建立输入流读取配置文件
+        inputStream = Resources.getResourceAsStream(resource);
+        // 实例化mybatis一级缓存
+        sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        // 基于一级缓存实例化二级缓存
+        session = sqlSessionFactory.openSession();
+        categoryMapper = session.getMapper(CategoryMapper.class);
+        productMapper = session.getMapper(ProductMapper.class);
+        productImageMapper = session.getMapper(ProductImageMapper.class);
+        orderItemMapper = session.getMapper(OrderItemMapper.class);
+        reviewMapper = session.getMapper(ReviewMapper.class);
+        propertyValueMapper = session.getMapper(PropertyValueMapper.class);
+    }
+
     @Override
     public List<Category> list() {
-        List<Category> list = categoryDAO.list();
+        try {
+            init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<Category> list = categoryMapper.list();
         for (Category c:list) {
-            List<Product> products = productDAO.list(c.getId());
+            List<Product> products = productMapper.listByCid(c.getId());
             for (Product p:products) {
-                List<ProductImage> pis = productImageDAO.list(p.getId());
-                int sale = orderItemDAO.getSaleCount(p.getId());
-                int reviewCount = reviewDAO.getTotal(p.getId());
+                p.setCategory(c);
+                List<ProductImage> pis = productImageMapper.listByPid(p.getId());
+                for (ProductImage pi:pis) {
+                    pi.setP(p);
+                }
+                int sale;
+                if (null==orderItemMapper.getSaleCount(p.getId())){
+                    sale = 0;
+                }else {
+                    sale = orderItemMapper.getSaleCount(p.getId());
+                }
+                int reviewCount = reviewMapper.getTotalByPid(p.getId());
                 p.setImages(pis);
                 p.setSaleCount(sale);
                 p.setReviewCount(reviewCount);
             }
             c.setProducts(products);
         }
-        // 调用DAO方法获取数据
         return list;
     }
 
     @Override
     public void add(Category category) {
-        categoryDAO.add(category);
+        try {
+            init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int flag = categoryMapper.add(category);
+        if (flag == 1){
+            session.commit();
+        }
     }
 
     @Override
     public Category edit(int id) {
-        return  categoryDAO.get(id);
+        try {
+            init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return  categoryMapper.get(id);
     }
 
     @Override
     public void update(Category category) {
-        categoryDAO.update(category);
+        try {
+            init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int flag = categoryMapper.update(category);
+        if (flag == 1) {
+            session.commit();
+        }
     }
 
     @Override
     public void delete(int id) {
-        List<Product> productList = productDAO.list(id);
-        for (Product p:productList) {
-            productDAO.delete(p.getId());
+        try {
+            init();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        categoryDAO.delete(id);
+        List<Product> productList = productMapper.listByCid(id);
+        for (Product p:productList) {
+            List<PropertyValue> propertyValues = propertyValueMapper.listByPid(p.getId());
+            for (PropertyValue pv:propertyValues) {
+                propertyValueMapper.delete(pv.getId());
+            }
+            productMapper.delete(p.getId());
+        }
+        categoryMapper.delete(id);
+        session.commit();
     }
 
     @Override
     public Category get(int id) {
-        Category category = categoryDAO.get(id);
-        List<Product> products = productDAO.list(id);
+        try {
+            init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Category category = categoryMapper.get(id);
+        List<Product> products = productMapper.listByCid(id);
         for (Product p:products) {
-            List<ProductImage> pis = productImageDAO.list(p.getId());
-            int reviewCount = reviewDAO.getTotal(p.getId());
-            int saleCount = orderItemDAO.getSaleCount(p.getId());
+            p.setCategory(category);
+            List<ProductImage> pis = productImageMapper.listByPid(p.getId());
+            for (ProductImage pi:pis) {
+                pi.setP(p);
+            }
+            int reviewCount;
+            if (null==reviewMapper.getTotalByPid(p.getId())){
+                reviewCount = 0;
+            }else {
+                reviewCount = reviewMapper.getTotalByPid(p.getId());
+            }
+            int saleCount;
+            if (null==orderItemMapper.getSaleCount(p.getId())){
+                saleCount = 0;
+            }else {
+                saleCount = orderItemMapper.getSaleCount(p.getId());
+            }
             p.setSaleCount(saleCount);
             p.setReviewCount(reviewCount);
             p.setImages(pis);

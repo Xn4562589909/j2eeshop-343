@@ -35,7 +35,7 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public void add(Product product) {
-        String sql = "insert into product(`name`,subTitle,originalPrice,promotePrice,stock,cid,createDate) values(?,?,?,?,?,?,?)";
+        String sql = "insert into product(`name`,subTitle,originalPrice,promotePrice,stock,cid) values(?,?,?,?,?,?)";
         try(Connection c = JdbcUtil.getConnection();
             PreparedStatement ps = c.prepareStatement(sql)){
             ps.setString(1,product.getName());
@@ -44,7 +44,6 @@ public class ProductDAOImpl implements ProductDAO {
             ps.setBigDecimal(4,product.getPromotePrice());
             ps.setInt(5,product.getStock());
             ps.setInt(6,product.getCategory().getId());
-            ps.setTimestamp(7,new Timestamp(System.currentTimeMillis()));
             ps.execute();
         }catch (SQLException e){
             e.printStackTrace();
@@ -143,7 +142,7 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public void updateTime(int id) {
-        String sql = "update product set gmt_modified = now() where id = ?";
+        String sql = "update product set gmtModified = now() where id = ?";
         try(Connection c = JdbcUtil.getConnection();
             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1,id);

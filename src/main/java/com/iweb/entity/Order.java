@@ -1,12 +1,16 @@
 package com.iweb.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Order {
     private String orderCode;
     private String address;
@@ -19,6 +23,7 @@ public class Order {
     private Date deliveryDate;
     private Date confirmDate;
     private User user;
+    private int uid;
     private int id;
     private String gmtModified;
     public void getStatusDesc(){
@@ -33,7 +38,6 @@ public class Order {
         }
         status=desc;
     }
-
     //每一个订单所对应的订单详情集合
     private List<OrderItem> orderItems;
     //订单的总计金额

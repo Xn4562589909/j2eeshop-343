@@ -20,7 +20,7 @@ public class OrderItemServlet extends BaseForeServlet {
         int productNumber = Integer.parseInt(req.getParameter("productNumber"));
         int productId = Integer.parseInt(req.getParameter("productId"));
         User user = (User) req.getSession().getAttribute("foreUser");
-        OrderItem orderItem = orderItemService.get(productId,-1);
+        OrderItem orderItem = orderItemService.getCarOrderItemByPid(productId);
         if (null != orderItem){
             int newNumber = productNumber+orderItem.getNumber();
             orderItem.setNumber(newNumber);

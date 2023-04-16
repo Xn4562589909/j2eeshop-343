@@ -37,10 +37,9 @@ public interface OrderItemService {
 
     /** 查询购物车的订单详情业务方法
      * @param pid 商品id
-     * @param oid 订单id 为-1
      * @return 订单详情对象
      */
-    OrderItem get(int pid,int oid);
+    OrderItem getCarOrderItemByPid(int pid);
 
     /** 修改订单详情的业务方法
      * @param orderItem 订单详情对象

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC
+        "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+        <!--        自动扫描指定包下的类的类型 后续在使用实体类的时候 就可以省略包名-->
+        <package name="com.iweb.entity"/>
+    </typeAliases>
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC" />
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/tmall?characterEncoding=utf-8&amp;useSSL=false"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <!--        用于mybatis后续扫描 这个category.xml用于书写sql语句-->
+        <!--        <mapper resource="category.xml" />-->
+<!--        <mapper class="com.iweb.mapper.CategoryMapper" />-->
+<!--        <mapper class="com.iweb.mapper.ProductMapper" />-->
+
+        <package name="com.iweb.mapper"/>
+    </mappers>
+</configuration>

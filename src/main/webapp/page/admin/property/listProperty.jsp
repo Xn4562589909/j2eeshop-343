@@ -19,31 +19,38 @@
     </div>
     <div class="row clearfix">
         <div class="col-md-12 column">
-            <table class="table table-hover table-bordered">
-                <thead>
-                <tr>
-                    <th>编号</th> <th>属性名称</th> <th>编辑</th> <th>删除</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach items="${pts}" var="pt" varStatus="st">
+            <c:if test="${pts.size()==0}">
+                <div style="display: flex;justify-content: center">
+                    <p>该分类暂无属性</p>
+                </div>
+            </c:if>
+            <c:if test="${pts.size()!=0}">
+                <table class="table table-hover table-bordered">
+                    <thead>
                     <tr>
-                        <td>${pt.id}</td>
-                        <td>${pt.name}</td>
-                        <td>
-                            <a href="/admin_property_edit?id=${pt.id}">
-                                <button type="button" class="btn btn-default btn-primary">编辑</button>
-                            </a>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-default btn-danger delete-btn"
-                                    name="/admin_property_delete?id=${pt.id}">删除</button>
-
-                        </td>
+                        <th>编号</th> <th>属性名称</th> <th>编辑</th> <th>删除</th>
                     </tr>
-                </c:forEach>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${pts}" var="pt" varStatus="st">
+                        <tr>
+                            <td>${pt.id}</td>
+                            <td>${pt.name}</td>
+                            <td>
+                                <a href="/admin_property_edit?id=${pt.id}">
+                                    <button type="button" class="btn btn-default btn-primary">编辑</button>
+                                </a>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-default btn-danger delete-btn"
+                                        name="/admin_property_delete?id=${pt.id}">删除</button>
+
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </c:if>
         </div>
     </div>
     <div class="row clearfix">
@@ -57,7 +64,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-10">
-                        <input type="hidden" class="form-control"  name="cid" value="${pts.get(0).category.id}" />
+                        <input type="hidden" class="form-control"  name="cid" value="${cid}" />
                     </div>
                 </div>
                 <div class="form-group">

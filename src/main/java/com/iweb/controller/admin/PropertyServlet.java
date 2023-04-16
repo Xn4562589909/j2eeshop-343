@@ -20,10 +20,8 @@ public class PropertyServlet extends BaseBackServlet {
         Integer cid = Integer.parseInt(request.getParameter("id"));
         //调用service 获取集合
         List<Property> properties = propertyService.list(cid);
-        if (properties.size() == 0){
-            return "/page/admin/property/nullProperty.html";
-        }
         //将获取到的集合存入到请求中
+        request.setAttribute("cid",cid);
         request.setAttribute("pts", properties);
         //通过转发跳转到对应的jsp页面 页面通过el表达式将数据渲染解析出来
         return "/page/admin/property/listProperty.jsp";

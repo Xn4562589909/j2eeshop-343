@@ -1,10 +1,16 @@
 package com.iweb.service.impl;
 
-import com.iweb.DAO.ProductImageDAO;
-import com.iweb.DAO.impl.ProductImageDAOImpl;
 import com.iweb.entity.ProductImage;
+import com.iweb.mapper.ProductImageMapper;
+import com.iweb.mapper.ProductMapper;
 import com.iweb.service.ProductImageService;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -12,19 +18,55 @@ import java.util.List;
  * @date 2023/4/7 19:43
  */
 public class ProductImageServiceImpl implements ProductImageService {
-    ProductImageDAO productImageDAO = new ProductImageDAOImpl();
+    // 定义配置文件路径
+
+    String resource = "mybatis-config.xml";
+    InputStream inputStream;
+    SqlSessionFactory sqlSessionFactory;
+    SqlSession session;
+    ProductMapper productMapper;
+    ProductImageMapper productImageMapper;
+
+    public void init() throws IOException {
+        // 建立输入流读取配置文件
+        inputStream = Resources.getResourceAsStream(resource);
+        // 实例化mybatis一级缓存
+        sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        // 基于一级缓存实例化二级缓存
+        session = sqlSessionFactory.openSession();
+        productMapper = session.getMapper(ProductMapper.class);
+        productImageMapper = session.getMapper(ProductImageMapper.class);
+    }
+
     @Override
     public List<ProductImage> list(int pid) {
-        return productImageDAO.list(pid);
+        try {
+            init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<ProductImage> pis = productImageMapper.listByPid(pid);
+        for (ProductImage pi:pis) {
+            pi.setP(productMapper.get(pid));
+        }
+        return pis;
     }
 
     @Override
     public void add(ProductImage pi) {
-        productImageDAO.add(pi);
+        try {
+            init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        pi.setPid(pi.getP().getId());
+        productImageMapper.add(pi);
+        session.commit();
     }
 
     @Override
     public void delete(int id) {
-        productImageDAO.delete(id);
+        productImageMapper.delete(id);
+        session.commit();
     }
 }

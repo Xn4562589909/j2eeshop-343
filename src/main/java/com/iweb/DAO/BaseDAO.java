@@ -50,4 +50,6 @@ public interface BaseDAO<T> {
      * @param id 对象id
      */
     void updateTime(int id);
+
+
 }

@@ -36,6 +36,7 @@ public class OrderServlet extends BaseForeServlet {
         String mobile = req.getParameter("mobile");
         String userMessage = req.getParameter("userMessage");
         User user = (User) req.getSession().getAttribute("foreUser");
+        System.out.println(user);
         String orderCode = OrderCodeUtil.getOrderId(user.getId());
         Order order = new Order();
         order.setOrderCode(orderCode);
