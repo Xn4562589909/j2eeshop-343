@@ -62,4 +62,10 @@ public interface OrderItemService {
      * @param id 订单详情id
      */
     void delete(int id);
+
+    /** 查找订单下的所有订单详情
+     * @param oid 订单id
+     * @return 订单详情集合
+     */
+    List<OrderItem> listByOid(int oid);
 }

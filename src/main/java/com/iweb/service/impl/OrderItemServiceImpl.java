@@ -1,6 +1,7 @@
 package com.iweb.service.impl;
 
 import com.iweb.entity.OrderItem;
+import com.iweb.entity.Product;
 import com.iweb.entity.ProductImage;
 import com.iweb.mapper.*;
 import com.iweb.service.OrderItemService;
@@ -148,5 +149,21 @@ public class OrderItemServiceImpl implements OrderItemService {
         }
         orderItemMapper.delete(id);
         session.commit();
+    }
+
+    @Override
+    public List<OrderItem> listByOid(int oid) {
+        try {
+            init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<OrderItem> orderItems = orderItemMapper.listByOid(oid);
+        for (OrderItem oi:orderItems) {
+            Product p = oi.getProduct();
+            List<ProductImage> pis = productImageMapper.listByPid(p.getId());
+            p.setImages(pis);
+        }
+        return orderItems;
     }
 }

@@ -30,12 +30,14 @@
                             <a href="/fore_foreUser_exitLogin">退出</a>
                         </li>
                     </ul>
-                    <form class="navbar-form navbar-left" role="search" action="/fore_foreProduct_nameList" method="post">
+                    <form class="navbar-form navbar-left" role="search" action="/fore_foreProduct_nameList"
+                          method="post">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="searchProduct" />
-                        </div> <button type="submit" class="btn btn-default">搜索</button>
+                            <input type="text" class="form-control" name="searchProduct"/>
+                        </div>
+                        <button type="submit" class="btn btn-default">搜索</button>
                     </form>
-                    <ul class="nav navbar-nav navbar-right nav-pills" >
+                    <ul class="nav navbar-nav navbar-right nav-pills">
                         <li>
                             <a href="/fore_orderItem_shoppingCar">
                                 <span class="badge pull-right">${oiNum}</span>
@@ -91,20 +93,31 @@
                             </td>
                             <td>${orderItem.product.originalPrice}</td>
                             <td>${orderItem.product.promotePrice}</td>
-                            <td><input type="number" class="form-control" id="productNumber" value="${orderItem.number}"
-                                       max="${orderItem.product.stock}" min="1" name="productNumber" /></td>
-                            <td><input type="checkbox" /></td>
+                            <td><div style="width: 150px;">
+                                    <div class="input-group">
+			                            <span class="input-group-btn">
+			                                <button class="btn btn-info add" type="button"
+                                                    name="/fore_orderItem_updateAddProductNum?id=${orderItem.id}">+</button>
+			                            </span>
+                                        <input type="text" class="form-control productNum" readonly="readonly" value=${orderItem.number}
+                                               max="${orderItem.product.stock}" min="1">
+                                        <span class="input-group-btn">
+				                            <button class="btn btn-info sub" type="button"
+                                                    name="/fore_orderItem_updateSubProductNum?id=${orderItem.id}">-</button>
+				                        </span>
+                                    </div><!-- /input-group -->
+                                </div></td>
+                            <td><input type="checkbox" class="isPick" value="true" name="${orderItem.id}"/></td>
                             <td>
                                 <button type="button" class="btn btn-default btn-danger delete-btn"
-                                        name="/fore_orderItem_delete?id=${orderItem.id}" >删除</button>
+                                        name="/fore_orderItem_delete?id=${orderItem.id}">删除
+                                </button>
                             </td>
                         </tr>
                     </c:forEach>
                     <tr>
                         <td colspan="7">
-                            <a href="#">
-                                <button type="button" class="btn btn-block btn-lg btn-info">付款</button>
-                            </a>
+                            <button type="button" class="btn btn-block btn-lg btn-info" id="pay">付款</button>
                         </td>
                     </tr>
                     </tbody>
@@ -115,21 +128,91 @@
 </div>
 </body>
 <script>
-    $(".delete-btn").click(function () {
-        let that = $(this);
-        let url = that.attr("name");
-        $.get(
-            url,
-            function (data) {
-                if ("success"==data){
-                    that.parent().parent().hide();
-                    alert("删除成功!");
-                    window.location.reload();
-                }else {
-                    alert("删除失败,请重新刷新页面!")
-                }
+    $(function () {
+
+        $('.add').click(function(){
+            let input = $(this).parent().next('input');
+            let max = input.attr('max')*1;
+            let newVal;
+            let url = $(this).attr('name');
+            if(input.val()*1<max){
+                newVal = input.val()*1+1;
+                input.val(newVal);
+                $.get(
+                    url,
+                    function (data) {
+                        if (data=="success"){
+                            alert("商品数量+1");
+                        }else {
+                            alert("系统出错,请重新刷新页面!")
+                        }
+                    }
+                )
             }
-        )
+        });
+
+        $('.sub').click(function(){
+            let input = $(this).parent().prev('input');
+            let min = input.attr('min')*1;
+            let url = $(this).attr('name');
+            if(input.val()*1>min){
+                let newVal = input.val()*1-1;
+                input.val(newVal);
+                $.get(
+                    url,
+                    function (data) {
+                        if (data=="success"){
+                            alert("商品数量-1");
+                        }else {
+                            alert("系统出错,请重新刷新页面!")
+                        }
+                    }
+                )
+            }
+        });
+
+        function getValue(arr) {
+            $('.isPick').each(function () {
+                if ($(this).prop('checked')) {
+                    arr.push($(this).attr('name'));
+                }
+            });
+        };
+
+        $("#pay").click(function () {
+            let array = [];
+            getValue(array);
+            $.ajax({
+                type:'POST',
+                url:'/fore_orderItem_carBuy',
+                data:{List:array},
+                traditional:true,
+                success:function (result) {
+                    // console.log(result);
+                    window.location.href='/fore_orderItem_goOrder?id='+result;
+                },
+                error:function () {
+                    alert("系统异常,接口出错了")
+                }
+            });
+        });
+
+        $(".delete-btn").click(function () {
+            let that = $(this);
+            let url = that.attr("name");
+            $.get(
+                url,
+                function (data) {
+                    if ("success" == data) {
+                        that.parent().parent().hide();
+                        alert("删除成功!");
+                        window.location.reload();
+                    } else {
+                        alert("删除失败,请重新刷新页面!")
+                    }
+                }
+            )
+        });
     });
 </script>
 </html>

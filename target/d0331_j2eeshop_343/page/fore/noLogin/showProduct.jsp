@@ -178,10 +178,10 @@
             "productNumber":productNumber},
             function (data) {
                 if (data=="success"){
+                    alert("添加成功,快去购物车结账吧");
                     window.location.reload();
-                    alert("添加成功,快去购物车结账吧")
                 }else {
-                    alert("您还没有登录，请先登录用户!")
+                    alert("您还没有登录，请先登录用户!");
                 }
             }
         )

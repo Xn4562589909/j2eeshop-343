@@ -16,6 +16,10 @@
             <result column="originalPrice" property="originalPrice" />
             <result column="promotePrice" property="promotePrice" />
             <result column="stock" property="stock" />
+            <association property="category" javaType="Category">
+                <id column="cid" property="id" />
+                <result column="cname" property="name" />
+            </association>
         </association>
         <association property="order" javaType="Order" >
             <id column="oid" property="id" />
@@ -39,8 +43,8 @@
     <select id="get" parameterType="_int" resultMap="orderItemBean">
         select oi.id 'oiid',oi.`number` 'number',oi.gmtCreate 'gmtCreate',oi.gmtModified 'gmtModified',p.id 'pid',p.name 'pname',
         p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',p.stock 'stock',o.id 'oid',
-        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password' from orderitem oi left join product p 
-        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id where oi.id = #{id}
+        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password',c.id 'cid',c.name 'cname' from orderitem oi left join product p
+        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id left join category c on p.cid = c.id where oi.id = #{id}
     </select>
     
     <update id="update" parameterType="OrderItem" >
@@ -51,8 +55,8 @@
     <select id="list" resultMap="orderItemBean">
         select oi.id 'oiid',oi.`number` 'number',oi.gmtCreate 'gmtCreate',oi.gmtModified 'gmtModified',p.id 'pid',p.name 'pname',
         p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',p.stock 'stock',o.id 'oid',
-        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password' from orderitem oi left join product p
-        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id
+        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password',c.id 'cid',c.name 'cname' from orderitem oi left join product p
+        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id left join category c on p.cid = c.id
     </select>
 
     <select id="getTotal" resultType="int" >
@@ -62,8 +66,8 @@
     <select id="listByUid" parameterType="_int" resultMap="orderItemBean" >
         select oi.id 'oiid',oi.`number` 'number',oi.gmtCreate 'gmtCreate',oi.gmtModified 'gmtModified',p.id 'pid',p.name 'pname',
         p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',p.stock 'stock',o.id 'oid',
-        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password' from orderitem oi left join product p
-        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id where oi.uid = #{uid} and oi.oid!=-1
+        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password',c.id 'cid',c.name 'cname' from orderitem oi left join product p
+        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id left join category c on p.cid = c.id where oi.uid = #{uid} and oi.oid!=-1
     </select>
 
     <select id="getTotalByUid" resultType="int" parameterType="_int" >
@@ -81,21 +85,21 @@
     <select id="getCarOrderItemByPid" parameterType="_int" resultMap="orderItemBean" >
         select oi.id 'oiid',oi.`number` 'number',oi.gmtCreate 'gmtCreate',oi.gmtModified 'gmtModified',p.id 'pid',p.name 'pname',
         p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',p.stock 'stock',o.id 'oid',
-        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password' from orderitem oi left join product p
-        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id where oi.oid=-1 and oi.pid=#{pid}
+        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password',c.id 'cid',c.name 'cname' from orderitem oi left join product p
+        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id left join category c on p.cid = c.id where oi.oid=-1 and oi.pid=#{pid}
     </select>
 
     <select id="listCar" parameterType="_int" resultMap="orderItemBean" >
         select oi.id 'oiid',oi.`number` 'number',oi.gmtCreate 'gmtCreate',oi.gmtModified 'gmtModified',p.id 'pid',p.name 'pname',
         p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',p.stock 'stock',o.id 'oid',
-        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password' from orderitem oi left join product p
-        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id where oi.oid=-1 and oi.uid=#{uid}
+        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password',c.id 'cid',c.name 'cname' from orderitem oi left join product p
+        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id left join category c on p.cid = c.id where oi.oid=-1 and oi.uid=#{uid}
     </select>
 
     <select id="listByOid" parameterType="_int" resultMap="orderItemBean" >
         select oi.id 'oiid',oi.`number` 'number',oi.gmtCreate 'gmtCreate',oi.gmtModified 'gmtModified',p.id 'pid',p.name 'pname',
         p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',p.stock 'stock',o.id 'oid',
-        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password' from orderitem oi left join product p
-        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id where oi.oid=#{oid}
+        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password',c.id 'cid',c.name 'cname' from orderitem oi left join product p
+        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id left join category c on p.cid = c.id where oi.oid=#{oid}
     </select>
 </mapper>

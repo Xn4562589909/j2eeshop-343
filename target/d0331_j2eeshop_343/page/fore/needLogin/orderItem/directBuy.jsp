@@ -67,21 +67,32 @@
                 <tr>
                     <th>商品图片</th>
                     <th>商品名称</th>
-                    <th>数量</th>
                     <th>原价</th>
                     <th>现价</th>
-                    <th>小计</th>
+                    <th>数量</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="warning">
-                    <td><img src="${product.images.get(0).url}" width="75px" height="75px"></td>
-                    <td>${product.name}</td>
-                    <td>${productNum}</td>
-                    <td>${product.originalPrice}</td>
-                    <td>${product.promotePrice}</td>
-                    <td>${totalPrice}</td>
-                </tr>
+                <c:if test="${!empty orderItems}" >
+                    <c:forEach items="${orderItems}" var="orderItem" varStatus="st">
+                        <tr class="warning">
+                            <td><img src="${orderItem.product.images.get(0).url}" width="75px" height="75px"></td>
+                            <td>${orderItem.product.name}</td>
+                            <td>${orderItem.product.originalPrice}</td>
+                            <td>${orderItem.product.promotePrice}</td>
+                            <td>${orderItem.number}</td>
+                        </tr>
+                    </c:forEach>
+                </c:if>
+                <c:if test="${empty orderItems}" >
+                    <tr class="warning">
+                        <td><img src="${product.images.get(0).url}" width="75px" height="75px"></td>
+                        <td>${product.name}</td>
+                        <td>${product.originalPrice}</td>
+                        <td>${product.promotePrice}</td>
+                        <td>${productNum}</td>
+                    </tr>
+                </c:if>
                 </tbody>
             </table>
         </div>
@@ -92,35 +103,65 @@
             <h4 class="text-center text-info">
                 填写收货信息
             </h4>
-            <form role="form" action="/fore_order_add" method="post">
-                <div class="form-group">
-                    <input type="hidden" class="form-control" value="${product.id}" name="pid" />
-                </div>
-                <div class="form-group">
-                    <input type="hidden" class="form-control" value="${productNum}" name="pNum" />
-                </div>
-                <div class="form-group">
-                    <label for="address">收货地址:</label>
-                    <input type="text" class="form-control" id="address" name="address" />
-                </div>
-                <div class="form-group">
-                    <label for="post">邮政编码:</label>
-                    <input type="text" class="form-control" id="post" name="post" />
-                </div>
-                <div class="form-group">
-                    <label for="receiver">收件人:</label>
-                    <input type="text" class="form-control" id="receiver" name="receiver" />
-                </div>
-                <div class="form-group">
-                    <label for="mobile">联系电话:</label>
-                    <input type="text" class="form-control" id="mobile" name="mobile" />
-                </div>
-                <div class="form-group">
-                    <label for="userMessage">备注:</label>
-                    <input type="text" class="form-control" id="userMessage" name="userMessage" />
-                </div>
-                <button type="submit" class="btn btn-default">确认提交</button>
-            </form>
+            <c:if test="${empty orderItems}" >
+                <form role="form" action="/fore_order_add" method="post">
+                    <div class="form-group">
+                        <input type="hidden" class="form-control" value="${product.id}" name="pid" />
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" class="form-control" value="${productNum}" name="pNum" />
+                    </div>
+                    <div class="form-group">
+                        <label for="address">收货地址:</label>
+                        <input type="text" class="form-control" id="address" name="address" />
+                    </div>
+                    <div class="form-group">
+                        <label for="post">邮政编码:</label>
+                        <input type="text" class="form-control" id="post" name="post" />
+                    </div>
+                    <div class="form-group">
+                        <label for="receiver">收件人:</label>
+                        <input type="text" class="form-control" id="receiver" name="receiver" />
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">联系电话:</label>
+                        <input type="text" class="form-control" id="mobile" name="mobile" />
+                    </div>
+                    <div class="form-group">
+                        <label for="userMessage">备注:</label>
+                        <input type="text" class="form-control" id="userMessage" name="userMessage" />
+                    </div>
+                    <button type="submit" class="btn btn-default">确认提交</button>
+                </form>
+            </c:if>
+            <c:if test="${!empty orderItems}" >
+                <form role="form" action="/fore_order_addByCar" method="post">
+                    <div class="form-group">
+                        <input type="hidden" class="form-control" value="${orderItems.get(0).order.id}" name="oid" />
+                    </div>
+                    <div class="form-group">
+                        <label for="address1">收货地址:</label>
+                        <input type="text" class="form-control" id="address1" name="address" />
+                    </div>
+                    <div class="form-group">
+                        <label for="post1">邮政编码:</label>
+                        <input type="text" class="form-control" id="post1" name="post" />
+                    </div>
+                    <div class="form-group">
+                        <label for="receiver1">收件人:</label>
+                        <input type="text" class="form-control" id="receiver1" name="receiver" />
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile1">联系电话:</label>
+                        <input type="text" class="form-control" id="mobile1" name="mobile" />
+                    </div>
+                    <div class="form-group">
+                        <label for="userMessage1">备注:</label>
+                        <input type="text" class="form-control" id="userMessage1" name="userMessage" />
+                    </div>
+                    <button type="submit" class="btn btn-default">确认提交</button>
+                </form>
+            </c:if>
         </div>
     </div>
 </div>

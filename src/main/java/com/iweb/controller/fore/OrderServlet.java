@@ -36,7 +36,6 @@ public class OrderServlet extends BaseForeServlet {
         String mobile = req.getParameter("mobile");
         String userMessage = req.getParameter("userMessage");
         User user = (User) req.getSession().getAttribute("foreUser");
-        System.out.println(user);
         String orderCode = OrderCodeUtil.getOrderId(user.getId());
         Order order = new Order();
         order.setOrderCode(orderCode);
@@ -48,7 +47,6 @@ public class OrderServlet extends BaseForeServlet {
         order.setUser(user);
         order.setStatus("waitPay");
         orderService.add(order);
-        order = orderService.get(orderCode);
         int pid = Integer.parseInt(req.getParameter("pid"));
         int number = Integer.parseInt(req.getParameter("pNum"));
         Product product = productService.get(pid);
@@ -60,7 +58,35 @@ public class OrderServlet extends BaseForeServlet {
         orderItemService.add(orderItem);
         product.setStock(product.getStock()-number);
         productService.update(product);
-        order = orderService.get(orderCode);
+        req.setAttribute("order",order);
+        return "/page/fore/needLogin/order/payView.jsp";
+    }
+
+    public String addByCar(HttpServletRequest req,HttpServletResponse resp){
+        int id = Integer.parseInt(req.getParameter("oid"));
+        String address = req.getParameter("address");
+        String post = req.getParameter("post");
+        String receiver = req.getParameter("receiver");
+        String mobile = req.getParameter("mobile");
+        String userMessage = req.getParameter("userMessage");
+        User user = (User) req.getSession().getAttribute("foreUser");
+        String orderCode = OrderCodeUtil.getOrderId(user.getId());
+        Order order = orderService.get(id);
+        order.setOrderCode(orderCode);
+        order.setAddress(address);
+        order.setPost(post);
+        order.setReceiver(receiver);
+        order.setMobile(mobile);
+        order.setUserMessage(userMessage);
+        order.setUser(user);
+        order.setStatus("waitPay");
+        orderService.update(order);
+        List<OrderItem> ois = order.getOrderItems();
+        for (OrderItem oi:ois) {
+            Product p = oi.getProduct();
+            p.setStock(p.getStock()-oi.getNumber());
+            productService.update(p);
+        }
         req.setAttribute("order",order);
         return "/page/fore/needLogin/order/payView.jsp";
     }
