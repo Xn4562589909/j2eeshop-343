@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.iweb.mapper.ProductImageMapper">
+
+    <resultMap id="productImageBean" type="ProductImage" >
+        <id column="piid" property="id" />
+        <result column="url" property="url" />
+        <association property="p" javaType="Product" >
+            <id column="pid" property="id" />
+            <result column="pname" property="name" />
+            <result column="subTitle" property="subTitle" />
+            <result column="originalPrice" property="originalPrice" />
+            <result column="promotePrice" property="promotePrice" />
+            <result column="stock" property="stock" />
+        </association>
+    </resultMap>
+
+    <insert id="add" parameterType="ProductImage" useGeneratedKeys="true" keyProperty="id" >
+        insert into img(url,pid) values (#{url},#{p.id})
+    </insert>
+
+    <delete id="delete" parameterType="int" >
+        delete from img where id=#{id}
+    </delete>
+
+    <select id="get" parameterType="_int" resultMap="productImageBean" >
+        select pi.id 'piid',pi.url 'url',p.id 'pid',p.name 'pname',p.subTitle 'subTitle',p.originalPrice 'originalPrice',
+        p.promotePrice 'promotePrice',p.stock 'stock' from img pi left join product p on pi.pid=p.id where pi.id=#{id}
+    </select>
+
+    <update id="update" parameterType="ProductImage" >
+        update img set url=#{url},pid=#{p.id},gmtModified=now() where id=#{id}
+    </update>
+
+    <select id="list" resultMap="productImageBean" >
+        select pi.id 'piid',pi.url 'url',p.id 'pid',p.name 'pname',p.subTitle 'subTitle',p.originalPrice 'originalPrice',
+        p.promotePrice 'promotePrice',p.stock 'stock' from img pi left join product p on pi.pid=p.id
+    </select>
+
+    <select id="getTotal" resultType="_int" >
+        select count(*) from img
+    </select>
+
+    <select id="listByPid" resultMap="productImageBean" parameterType="_int" >
+        select pi.id 'piid',pi.url 'url',p.id 'pid',p.name 'pname',p.subTitle 'subTitle',p.originalPrice 'originalPrice',
+        p.promotePrice 'promotePrice',p.stock 'stock' from img pi left join product p on pi.pid=p.id where pi.pid=#{pid}
+    </select>
+
+</mapper>

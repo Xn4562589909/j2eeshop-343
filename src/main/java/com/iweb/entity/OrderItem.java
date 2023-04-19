@@ -15,11 +15,8 @@ import lombok.NoArgsConstructor;
 public class OrderItem {
     private int number;
     private Product product;
-    private int pid;
     private Order order;
-    private int oid;
     private User user;
-    private int uid;
     private int id;
     private String gmtCreate;
     private String gmtModified;

@@ -1,8 +1,10 @@
 package com.iweb.service.impl;
 
 import com.iweb.entity.Property;
+import com.iweb.entity.PropertyValue;
 import com.iweb.mapper.CategoryMapper;
 import com.iweb.mapper.PropertyMapper;
+import com.iweb.mapper.PropertyValueMapper;
 import com.iweb.service.PropertyService;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -23,7 +25,7 @@ public class PropertyServiceImpl implements PropertyService {
     SqlSessionFactory sqlSessionFactory;
     SqlSession session;
     PropertyMapper propertyMapper;
-    CategoryMapper categoryMapper;
+    PropertyValueMapper propertyValueMapper;
 
     public void init() throws IOException {
         // 建立输入流读取配置文件
@@ -33,7 +35,7 @@ public class PropertyServiceImpl implements PropertyService {
         // 基于一级缓存实例化二级缓存
         session = sqlSessionFactory.openSession();
         propertyMapper = session.getMapper(PropertyMapper.class);
-        categoryMapper = session.getMapper(CategoryMapper.class);
+        propertyValueMapper = session.getMapper(PropertyValueMapper.class);
     }
     @Override
     public List<Property> list(int cid) {
@@ -44,9 +46,6 @@ public class PropertyServiceImpl implements PropertyService {
             e.printStackTrace();
         }
         List<Property> list = propertyMapper.listByCid(cid);
-        for (Property property:list) {
-            property.setCategory(categoryMapper.get(property.getCid()));
-        }
         return list;
     }
 
@@ -57,7 +56,6 @@ public class PropertyServiceImpl implements PropertyService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        property.setCid(property.getCategory().getId());
         propertyMapper.add(property);
         session.commit();
     }
@@ -69,9 +67,7 @@ public class PropertyServiceImpl implements PropertyService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Property property = propertyMapper.get(id);
-        property.setCategory(categoryMapper.get(property.getCid()));
-        return  property;
+        return  propertyMapper.get(id);
     }
 
     @Override
@@ -81,7 +77,6 @@ public class PropertyServiceImpl implements PropertyService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        property.setCid(property.getCategory().getId());
         propertyMapper.update(property);
         session.commit();
     }
@@ -92,6 +87,10 @@ public class PropertyServiceImpl implements PropertyService {
             init();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        List<PropertyValue> pvs = propertyValueMapper.listByPtid(id);
+        for (PropertyValue pv:pvs) {
+            propertyValueMapper.delete(pv.getId());
         }
         propertyMapper.delete(id);
         session.commit();
@@ -104,11 +103,7 @@ public class PropertyServiceImpl implements PropertyService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        List<Property> list = propertyMapper.list();
-        for (Property property:list) {
-            property.setCategory(categoryMapper.get(property.getCid()));
-        }
-        return list;
+        return propertyMapper.list();
     }
 
     @Override
@@ -118,9 +113,6 @@ public class PropertyServiceImpl implements PropertyService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Property property = propertyMapper.get(id);
-        property.setCategory(categoryMapper.get(property.getCid()));
-        return property;
+        return propertyMapper.get(id);
     }
-
 }

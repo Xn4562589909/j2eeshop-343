@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.iweb.mapper.PropertyMapper">
+
+    <resultMap id="propertyBean" type="Property">
+        <id column="ptid" property="id" />
+        <result column="ptname" property="name" />
+        <result column="ptGmtCreate" property="gmtCreate" />
+        <result column="ptGmtModified" property="gmtModified" />
+        <association property="category" javaType="Category" >
+            <id column="cid" property="id" />
+            <result column="cname" property="name" />
+            <result column="cGmtCreate" property="gmtCreate" />
+            <result column="cGmtModified" property="gmtModified" />
+        </association>
+    </resultMap>
+
+    <insert id="add" parameterType="Property" useGeneratedKeys="true" keyProperty="id">
+        insert into property(cid,`name`) values(#{category.id},#{name})
+    </insert>
+
+    <delete id="delete" parameterType="int">
+        delete from property where id=#{id}
+    </delete>
+
+    <select id="get" parameterType="_int" resultMap="propertyBean" >
+        select pt.id 'ptid',pt.name 'ptname',pt.gmtCreate 'ptGmtCreate',pt.gmtModified 'ptGmtModified',c.id 'cid',
+        c.name 'cname',c.gmtCreate 'cGmtCreate',c.gmtModified 'cGmtModified' from property pt left join category c
+        on pt.cid = c.id where pt.id=#{id}
+    </select>
+
+    <update id="update" parameterType="Property" >
+        update property set cid=#{category.id},`name`=#{name},gmtModified=now() where id=#{id}
+    </update>
+
+    <select id="list" resultMap="propertyBean">
+        select pt.id 'ptid',pt.name 'ptname',pt.gmtCreate 'ptGmtCreate',pt.gmtModified 'ptGmtModified',c.id 'cid',
+        c.name 'cname',c.gmtCreate 'cGmtCreate',c.gmtModified 'cGmtModified' from property pt left join category c
+        on pt.cid = c.id
+    </select>
+
+    <select id="getTotal" resultType="_int" >
+        select count(*) from property
+    </select>
+
+    <select id="listByCid" resultMap="propertyBean" parameterType="_int" >
+        select pt.id 'ptid',pt.name 'ptname',pt.gmtCreate 'ptGmtCreate',pt.gmtModified 'ptGmtModified',c.id 'cid',
+        c.name 'cname',c.gmtCreate 'cGmtCreate',c.gmtModified 'cGmtModified' from property pt left join category c
+        on pt.cid = c.id where pt.cid = #{cid}
+    </select>
+
+</mapper>

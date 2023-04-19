@@ -27,7 +27,6 @@ public class PropertyValueServiceImpl implements PropertyValueService {
     SqlSession session;
     PropertyMapper propertyMapper;
     PropertyValueMapper propertyValueMapper;
-    ProductMapper productMapper;
 
     public void init() throws IOException {
         // 建立输入流读取配置文件
@@ -38,7 +37,6 @@ public class PropertyValueServiceImpl implements PropertyValueService {
         session = sqlSessionFactory.openSession();
         propertyMapper = session.getMapper(PropertyMapper.class);
         propertyValueMapper = session.getMapper(PropertyValueMapper.class);
-        productMapper = session.getMapper(ProductMapper.class);
     }
     @Override
     public List<PropertyValue> list(int pid) {
@@ -47,12 +45,7 @@ public class PropertyValueServiceImpl implements PropertyValueService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        List<PropertyValue> pvs = propertyValueMapper.listByPid(pid);
-        for (PropertyValue pv:pvs) {
-            pv.setProduct(productMapper.get(pv.getPid()));
-            pv.setProperty(propertyMapper.get(pv.getPtid()));
-        }
-        return pvs;
+        return propertyValueMapper.listByPid(pid);
     }
 
     @Override
@@ -62,10 +55,7 @@ public class PropertyValueServiceImpl implements PropertyValueService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        PropertyValue pv = propertyValueMapper.get(id);
-        pv.setProperty(propertyMapper.get(pv.getPtid()));
-        pv.setProduct(productMapper.get(pv.getPid()));
-        return pv;
+        return propertyValueMapper.get(id);
     }
 
     @Override
@@ -75,8 +65,6 @@ public class PropertyValueServiceImpl implements PropertyValueService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        pv.setPid(pv.getProduct().getId());
-        pv.setPtid(pv.getProperty().getId());
         propertyValueMapper.update(pv);
         session.commit();
     }
@@ -88,8 +76,6 @@ public class PropertyValueServiceImpl implements PropertyValueService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        pv.setPid(pv.getProduct().getId());
-        pv.setPtid(pv.getProperty().getId());
         propertyValueMapper.add(pv);
         session.commit();
     }

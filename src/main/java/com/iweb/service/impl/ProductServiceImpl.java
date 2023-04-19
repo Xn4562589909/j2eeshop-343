@@ -2,6 +2,7 @@ package com.iweb.service.impl;
 
 import com.iweb.entity.Product;
 import com.iweb.entity.ProductImage;
+import com.iweb.entity.PropertyValue;
 import com.iweb.mapper.*;
 import com.iweb.service.ProductService;
 import org.apache.ibatis.io.Resources;
@@ -26,9 +27,9 @@ public class ProductServiceImpl implements ProductService {
     SqlSession session;
     ProductMapper productMapper;
     ProductImageMapper productImageMapper;
-    CategoryMapper categoryMapper;
     OrderItemMapper orderItemMapper;
     ReviewMapper reviewMapper;
+    PropertyValueMapper propertyValueMapper;
 
     public void init() throws IOException {
         // 建立输入流读取配置文件
@@ -39,9 +40,9 @@ public class ProductServiceImpl implements ProductService {
         session = sqlSessionFactory.openSession();
         productMapper = session.getMapper(ProductMapper.class);
         productImageMapper = session.getMapper(ProductImageMapper.class);
-        categoryMapper = session.getMapper(CategoryMapper.class);
         orderItemMapper = session.getMapper(OrderItemMapper.class);
         reviewMapper = session.getMapper(ReviewMapper.class);
+        propertyValueMapper = session.getMapper(PropertyValueMapper.class);
     }
 
 
@@ -54,11 +55,7 @@ public class ProductServiceImpl implements ProductService {
         }
         List<Product> list = productMapper.listByCid(cid);
         for (Product p:list) {
-            p.setCategory(categoryMapper.get(cid));
             List<ProductImage> pis = productImageMapper.listByPid(p.getId());
-            for (ProductImage pi:pis) {
-                pi.setP(p);
-            }
             p.setImages(pis);
         }
         return list;
@@ -71,7 +68,6 @@ public class ProductServiceImpl implements ProductService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        product.setCid(product.getCategory().getId());
         productMapper.add(product);
         session.commit();
     }
@@ -82,6 +78,14 @@ public class ProductServiceImpl implements ProductService {
             init();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        List<ProductImage> pis = productImageMapper.listByPid(id);
+        for (ProductImage pi:pis) {
+            productImageMapper.delete(pi.getId());
+        }
+        List<PropertyValue> pvs = propertyValueMapper.listByPid(id);
+        for (PropertyValue pv:pvs) {
+            propertyValueMapper.delete(pv.getId());
         }
         productMapper.delete(id);
         session.commit();
@@ -95,11 +99,7 @@ public class ProductServiceImpl implements ProductService {
             e.printStackTrace();
         }
         Product product = productMapper.get(id);
-        product.setCategory(categoryMapper.get(product.getCid()));
         List<ProductImage> productImages = productImageMapper.listByPid(product.getId());
-        for (ProductImage pi:productImages) {
-            pi.setP(product);
-        }
         int saleCount;
         if (null == orderItemMapper.getSaleCount(product.getId())){
             saleCount = 0;
@@ -118,7 +118,6 @@ public class ProductServiceImpl implements ProductService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        product.setCid(product.getCategory().getId());
         productMapper.update(product);
         session.commit();
     }
@@ -131,9 +130,6 @@ public class ProductServiceImpl implements ProductService {
             e.printStackTrace();
         }
         List<Product> list = productMapper.list();
-        for (Product p:list) {
-            p.setCategory(categoryMapper.get(p.getCid()));
-        }
         return list;
     }
 
@@ -146,7 +142,6 @@ public class ProductServiceImpl implements ProductService {
         }
         List<Product> products = productMapper.listByName(name);
         for (Product product:products) {
-            product.setCategory(categoryMapper.get(product.getCid()));
 //            int sale = orderItemMapper.getSaleCount(product.getId());
 //            int reviewCount = reviewMapper.getTotalByPid(product.getId());
             int reviewCount;
@@ -162,9 +157,6 @@ public class ProductServiceImpl implements ProductService {
                 saleCount = orderItemMapper.getSaleCount(product.getId());
             }
             List<ProductImage> pis = productImageMapper.listByPid(product.getId());
-            for (ProductImage pi:pis) {
-                pi.setP(product);
-            }
             product.setImages(pis);
             product.setSaleCount(saleCount);
             product.setReviewCount(reviewCount);

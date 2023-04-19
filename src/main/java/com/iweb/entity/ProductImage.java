@@ -15,7 +15,6 @@ public class ProductImage {
     private int id;
     private String url;
     private Product p;
-    private int pid;
     private String gmtCreate;
     private String gmtModified;
 }

@@ -27,9 +27,7 @@ public class OrderServiceImpl implements OrderService {
     InputStream inputStream;
     SqlSessionFactory sqlSessionFactory;
     SqlSession session;
-    ProductMapper productMapper;
     OrderItemMapper orderItemMapper;
-    UserMapper userMapper;
     OrderMapper orderMapper;
     ProductImageMapper productImageMapper;
 
@@ -40,9 +38,7 @@ public class OrderServiceImpl implements OrderService {
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         // 基于一级缓存实例化二级缓存
         session = sqlSessionFactory.openSession();
-        productMapper = session.getMapper(ProductMapper.class);
         orderItemMapper = session.getMapper(OrderItemMapper.class);
-        userMapper = session.getMapper(UserMapper.class);
         orderMapper = session.getMapper(OrderMapper.class);
         productImageMapper = session.getMapper(ProductImageMapper.class);
     }
@@ -54,7 +50,6 @@ public class OrderServiceImpl implements OrderService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        order.setUid(order.getUser().getId());
         orderMapper.add(order);
         session.commit();
     }
@@ -67,22 +62,13 @@ public class OrderServiceImpl implements OrderService {
             e.printStackTrace();
         }
         Order order = orderMapper.getByOrderCode(orderCode);
-        order.setUser(userMapper.get(order.getUid()));
         List<OrderItem> ois = orderItemMapper.listByOid(order.getId());
-        for (OrderItem oi:ois) {
-            oi.setOrder(order);
-            oi.setProduct(productMapper.get(oi.getPid()));
-            oi.setUser(userMapper.get(oi.getUid()));
-        }
         order.setOrderItems(ois);
         int totalNumber = 0;
         BigDecimal total = new BigDecimal(0);
         for (OrderItem oi:ois) {
             Product product = oi.getProduct();
             List<ProductImage> pis = productImageMapper.listByPid(product.getId());
-            for (ProductImage pi:pis) {
-                pi.setP(product);
-            }
             product.setImages(pis);
             totalNumber += oi.getNumber();
             BigDecimal price = oi.getProduct().getPromotePrice().multiply(new BigDecimal(oi.getNumber()));
@@ -102,19 +88,12 @@ public class OrderServiceImpl implements OrderService {
             e.printStackTrace();
         }
         Order order = orderMapper.get(id);
-        order.setUser(userMapper.get(order.getUid()));
         List<OrderItem> ois = orderItemMapper.listByOid(order.getId());
         int totalNumber = 0;
         BigDecimal total = new BigDecimal(0);
         for (OrderItem oi:ois) {
-            oi.setUser(userMapper.get(oi.getUid()));
-            oi.setProduct(productMapper.get(oi.getPid()));
-            oi.setOrder(order);
             Product product = oi.getProduct();
             List<ProductImage> pis = productImageMapper.listByPid(product.getId());
-            for (ProductImage pi:pis) {
-                pi.setP(product);
-            }
             product.setImages(pis);
             totalNumber += oi.getNumber();
             BigDecimal price = product.getPromotePrice().multiply(new BigDecimal(oi.getNumber()));
@@ -134,7 +113,6 @@ public class OrderServiceImpl implements OrderService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        order.setUid(order.getUser().getId());
         orderMapper.update(order);
         session.commit();
     }
@@ -148,14 +126,10 @@ public class OrderServiceImpl implements OrderService {
         }
         List<Order> orders = orderMapper.listByUid(uid);
         for (Order order:orders) {
-            order.setUser(userMapper.get(uid));
             List<OrderItem> ois = orderItemMapper.listByOid(order.getId());
             int totalNumber = 0;
             BigDecimal total = new BigDecimal(0);
             for (OrderItem oi:ois) {
-                oi.setOrder(order);
-                oi.setProduct(productMapper.get(oi.getPid()));
-                oi.setUser(userMapper.get(uid));
                 totalNumber += oi.getNumber();
                 BigDecimal price = oi.getProduct().getPromotePrice().multiply(new BigDecimal(oi.getNumber()));
                 total = total.add(price);

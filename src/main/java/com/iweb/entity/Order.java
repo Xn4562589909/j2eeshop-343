@@ -23,7 +23,6 @@ public class Order {
     private Date deliveryDate;
     private Date confirmDate;
     private User user;
-    private int uid;
     private int id;
     private String gmtModified;
     public void getStatusDesc(){

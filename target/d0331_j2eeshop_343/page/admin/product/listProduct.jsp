@@ -33,9 +33,16 @@
                     <tbody>
                     <c:forEach items="${products}" var="p" varStatus="st" >
                         <tr>
-                            <td>
-                                <img src="${p.images.get(0).url}" height="70" width="70">
-                            </td>
+                            <c:if test="${p.images.size()==0}" >
+                                <td>
+                                    <img src="../../../imgs/product/暂无图片.png" height="70" width="70">
+                                </td>
+                            </c:if>
+                            <c:if test="${p.images.size()!=0}" >
+                                <td>
+                                    <img src="${p.images.get(0).url}" height="70" width="70">
+                                </td>
+                            </c:if>
                             <td>${p.name}</td><td>${p.subTitle}</td><td>${p.originalPrice}</td>
                             <td>${p.promotePrice}</td><td>${p.stock}</td><td>${p.createDate}</td>
                             <td>

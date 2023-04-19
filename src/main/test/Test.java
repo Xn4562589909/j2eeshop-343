@@ -43,7 +43,7 @@ public class Test {
         session = sqlSessionFactory.openSession();
         categoryMapper = session.getMapper(CategoryMapper.class);
         productMapper = session.getMapper(ProductMapper.class);
-        orderMapper = session.getMapper(OrderMapper.class);
+//        orderMapper = session.getMapper(OrderMapper.class);
         orderItemMapper = session.getMapper(OrderItemMapper.class);
     }
 
@@ -108,7 +108,12 @@ public class Test {
 //        product.setCid(83);
 //        productMapper.update(product);
 //        productMapper.add(product);
-        System.out.println(productMapper.getTotalByCid(83));
-        session.commit();
+//        System.out.println(productMapper.getTotalByCid(83));
+//        session.commit();
+
+//        List<OrderItem> ois = orderItemMapper.listByOid(18);
+//        System.out.println(ois);
+          List<Product> products = productMapper.listByName("平板");
+        System.out.println(products);
     }
 }

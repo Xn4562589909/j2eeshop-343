@@ -1,5 +1,6 @@
 package com.iweb.controller.fore;
 
+import com.iweb.entity.Order;
 import com.iweb.entity.OrderItem;
 import com.iweb.entity.Product;
 import com.iweb.entity.User;
@@ -29,6 +30,9 @@ public class OrderItemServlet extends BaseForeServlet {
             orderItem = new OrderItem();
             orderItem.setNumber(productNumber);
             orderItem.setUser(user);
+            Order order = new Order();
+            order.setId(-1);
+            orderItem.setOrder(order);
             orderItem.setProduct(productService.get(productId));
             orderItemService.add(orderItem);
             int oiNum = (int)req.getSession().getAttribute("oiNum")+1;

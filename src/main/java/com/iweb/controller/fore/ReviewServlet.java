@@ -22,18 +22,17 @@ public class ReviewServlet extends BaseForeServlet {
         String comment = req.getParameter("comment");
         String anonymity = req.getParameter("anonymity");
         User user = (User) req.getSession().getAttribute("foreUser");
-        User commentUser = new User();
-        commentUser.setId(user.getId());
-        commentUser.setName(user.getName());
         Review review = new Review();
         Product product = productService.get(pid);
         review.setProduct(product);
         review.setContent(comment);
+        review.setUser(user);
         if ("true".equals(anonymity)){
             String fakeName = user.getAnonymousName();
-            commentUser.setName(fakeName);
+            review.setNickname(fakeName);
+        }else {
+            review.setNickname(user.getName());
         }
-        review.setUser(commentUser);
         reviewService.add(review);
         Set<Product> productsComment = (Set<Product>) req.getSession().getAttribute("productsComment");
         if (productsComment.size()==1){

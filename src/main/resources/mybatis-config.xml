@@ -24,6 +24,15 @@
 <!--        <mapper class="com.iweb.mapper.CategoryMapper" />-->
 <!--        <mapper class="com.iweb.mapper.ProductMapper" />-->
 
-        <package name="com.iweb.mapper"/>
+<!--        <package name="com.iweb.mapper"/>-->
+        <mapper resource="mapper/category.xml" />
+        <mapper resource="mapper/orderItem.xml" />
+        <mapper resource="mapper/order.xml" />
+        <mapper resource="mapper/productImage.xml" />
+        <mapper resource="mapper/product.xml" />
+        <mapper resource="mapper/review.xml" />
+        <mapper resource="mapper/user.xml" />
+        <mapper resource="mapper/propertyValue.xml" />
+        <mapper resource="mapper/property.xml" />
     </mappers>
 </configuration>

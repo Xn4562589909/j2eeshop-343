@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.iweb.mapper.ProductMapper">
+
+    <resultMap id="productBean" type="Product" >
+        <id column="pid" property="id" />
+        <result column="pname" property="name" />
+        <result column="subTitle" property="subTitle" />
+        <result column="originalPrice" property="originalPrice" />
+        <result column="promotePrice" property="promotePrice" />
+        <result column="stock" property="stock" />
+        <result column="createDate" property="createDate" />
+        <result column="pGmtModified" property="gmtModified" />
+        <association property="category" javaType="Category" >
+            <id column="cid" property="id" />
+            <result column="cname" property="name" />
+            <result column="cGmtCreate" property="gmtCreate" />
+            <result column="cGmtModified" property="gmtModified" />
+        </association>
+    </resultMap>
+
+    <insert id="add" parameterType="Product" useGeneratedKeys="true" keyProperty="id" >
+        insert into product(`name`,subTitle,originalPrice,promotePrice,stock,cid)
+        values(#{name},#{subTitle},#{originalPrice},#{promotePrice},#{stock},#{category.id})
+    </insert>
+
+    <delete id="delete" parameterType="int" >
+        delete from product where id = #{id}
+    </delete>
+
+    <select id="get" parameterType="_int" resultMap="productBean" >
+        select p.id 'pid',p.name 'pname',p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',
+        p.stock 'stock',p.createDate 'createDate',p.gmtModified 'pGmtModified',c.id 'cid',c.name 'cname',c.gmtCreate 'cGmtCreate',
+        c.gmtModified 'cGmtModified' from product p left join category c on p.cid = c.id where p.id = #{id}
+    </select>
+
+    <update id="update" parameterType="Product" >
+        update product set `name`=#{name},subTitle=#{subTitle},originalPrice=#{originalPrice},
+        promotePrice=#{promotePrice},stock=#{stock},cid=#{category.id},gmtModified=now() where id=#{id}
+    </update>
+
+    <select id="list" resultMap="productBean" >
+        select p.id 'pid',p.name 'pname',p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',
+        p.stock 'stock',p.createDate 'createDate',p.gmtModified 'pGmtModified',c.id 'cid',c.name 'cname',c.gmtCreate 'cGmtCreate',
+        c.gmtModified 'cGmtModified' from product p left join category c on p.cid = c.id
+    </select>
+
+    <select id="getTotal" resultType="_int" >
+        select count(*) from product;
+    </select>
+
+    <select id="listByCid" parameterType="_int" resultMap="productBean" >
+        select p.id 'pid',p.name 'pname',p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',
+        p.stock 'stock',p.createDate 'createDate',p.gmtModified 'pGmtModified',c.id 'cid',c.name 'cname',c.gmtCreate 'cGmtCreate',
+        c.gmtModified 'cGmtModified' from product p left join category c on p.cid = c.id where p.cid = #{cid}
+    </select>
+
+    <select id="getTotalByCid" resultType="_int" parameterType="_int" >
+        select count(*) from product where cid=#{cid}
+    </select>
+
+    <select id="listByName" parameterType="string" resultMap="productBean" >
+        select p.id 'pid',p.name 'pname',p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',
+        p.stock 'stock',p.createDate 'createDate',p.gmtModified 'pGmtModified',c.id 'cid',c.name 'cname',c.gmtCreate 'cGmtCreate',
+        c.gmtModified 'cGmtModified' from product p left join category c on p.cid = c.id where p.`name` like concat('%',#{name},'%')
+    </select>
+
+</mapper>

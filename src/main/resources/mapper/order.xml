@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.iweb.mapper.OrderMapper">
+
+    <resultMap id="orderBean" type="Order" >
+        <id column="oid" property="id" />
+        <result column="orderCode" property="orderCode" />
+        <result column="address" property="address" />
+        <result column="post" property="post" />
+        <result column="receiver" property="receiver" />
+        <result column="mobile" property="mobile" />
+        <result column="userMessage" property="userMessage" />
+        <result column="ocreateDate" property="createDate" />
+        <result column="payDate" property="payDate" />
+        <result column="deliveryDate" property="deliveryDate" />
+        <result column="confirmDate" property="confirmDate" />
+        <result column="gmtModified" property="gmtModified" />
+        <result column="status" property="status" />
+        <association property="user" javaType="User" >
+            <id column="uid" property="id" />
+            <result column="username" property="name" />
+            <result column="password" property="password" />
+        </association>
+    </resultMap>
+
+    <insert id="add" parameterType="Order" useGeneratedKeys="true" keyProperty="id">
+        insert into order_(orderCode,address,post,receiver,mobile,userMessage,uid) values
+        (#{orderCode},#{address},#{post},#{receiver},#{mobile},#{userMessage},#{user.id})
+    </insert>
+
+    <update id="delete" parameterType="_int" >
+        update order_ set status='delete',gmtModified=now() where id = #{id}
+    </update>
+
+    <select id="get" parameterType="_int" resultMap="orderBean" >
+        select o.id 'oid',o.orderCode 'orderCode',o.address 'address',o.post 'post',o.receiver 'receiver',o.status 'status',
+        o.mobile 'mobile',o.userMessage 'userMessage',o.createDate 'ocreateDate',o.payDate 'payDate',o.deliveryDate 'deliveryDate',
+        o.confirmDate 'confirmDate',o.gmtModified 'gmtModified',u.id 'uid',u.name 'username',u.password 'password' from order_ o
+        left join `user` u on o.uid = u.id where o.id = #{id} and status != 'delete'
+    </select>
+
+    <update id="update" parameterType="Order">
+        update order_ set orderCode=#{orderCode},address=#{address},post=#{post},receiver=#{receiver},
+            mobile=#{mobile},userMessage=#{userMessage},payDate=#{payDate},deliveryDate=#{deliveryDate},
+            confirmDate=#{confirmDate},uid=#{user.id},status=#{status},gmtModified=now() where id=#{id}
+    </update>
+
+    <select id="list" resultMap="orderBean" >
+        select * from order_ where status != 'delete'
+    </select>
+
+    <select id="getTotal" resultType="_int" >
+        select count(*) from order_ where status != 'delete'
+    </select>
+
+    <select id="getByOrderCode" parameterType="string" resultMap="orderBean" >
+        select o.id 'oid',o.orderCode 'orderCode',o.address 'address',o.post 'post',o.receiver 'receiver',o.status 'status',
+        o.mobile 'mobile',o.userMessage 'userMessage',o.createDate 'ocreateDate',o.payDate 'payDate',o.deliveryDate 'deliveryDate',
+        o.confirmDate 'confirmDate',o.gmtModified 'gmtModified',u.id 'uid',u.name 'username',u.password 'password' from order_ o
+        left join `user` u on o.uid = u.id where o.orderCode = #{orderCode} and status != 'delete'
+    </select>
+
+    <select id="listByUid" parameterType="_int" resultMap="orderBean" >
+        select o.id 'oid',o.orderCode 'orderCode',o.address 'address',o.post 'post',o.receiver 'receiver',o.status 'status',
+        o.mobile 'mobile',o.userMessage 'userMessage',o.createDate 'ocreateDate',o.payDate 'payDate',o.deliveryDate 'deliveryDate',
+        o.confirmDate 'confirmDate',o.gmtModified 'gmtModified',u.id 'uid',u.name 'username',u.password 'password' from order_ o
+        left join `user` u on o.uid = u.id where o.status != 'delete' and o.uid = #{uid}
+    </select>
+
+</mapper>

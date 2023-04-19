@@ -24,7 +24,6 @@ public class ProductImageServiceImpl implements ProductImageService {
     InputStream inputStream;
     SqlSessionFactory sqlSessionFactory;
     SqlSession session;
-    ProductMapper productMapper;
     ProductImageMapper productImageMapper;
 
     public void init() throws IOException {
@@ -34,7 +33,6 @@ public class ProductImageServiceImpl implements ProductImageService {
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         // 基于一级缓存实例化二级缓存
         session = sqlSessionFactory.openSession();
-        productMapper = session.getMapper(ProductMapper.class);
         productImageMapper = session.getMapper(ProductImageMapper.class);
     }
 
@@ -45,11 +43,7 @@ public class ProductImageServiceImpl implements ProductImageService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        List<ProductImage> pis = productImageMapper.listByPid(pid);
-        for (ProductImage pi:pis) {
-            pi.setP(productMapper.get(pid));
-        }
-        return pis;
+        return productImageMapper.listByPid(pid);
     }
 
     @Override
@@ -59,7 +53,6 @@ public class ProductImageServiceImpl implements ProductImageService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        pi.setPid(pi.getP().getId());
         productImageMapper.add(pi);
         session.commit();
     }

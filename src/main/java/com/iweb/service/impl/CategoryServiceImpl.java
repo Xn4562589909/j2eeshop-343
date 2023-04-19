@@ -1,9 +1,6 @@
 package com.iweb.service.impl;
 
-import com.iweb.entity.Category;
-import com.iweb.entity.Product;
-import com.iweb.entity.ProductImage;
-import com.iweb.entity.PropertyValue;
+import com.iweb.entity.*;
 import com.iweb.mapper.*;
 import com.iweb.service.CategoryService;
 import org.apache.ibatis.io.Resources;
@@ -33,6 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     OrderItemMapper orderItemMapper;
     ReviewMapper reviewMapper;
     PropertyValueMapper propertyValueMapper;
+    PropertyMapper propertyMapper;
 
     public void init() throws IOException {
         // 建立输入流读取配置文件
@@ -47,6 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
         orderItemMapper = session.getMapper(OrderItemMapper.class);
         reviewMapper = session.getMapper(ReviewMapper.class);
         propertyValueMapper = session.getMapper(PropertyValueMapper.class);
+        propertyMapper = session.getMapper(PropertyMapper.class);
     }
 
     @Override
@@ -60,11 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
         for (Category c:list) {
             List<Product> products = productMapper.listByCid(c.getId());
             for (Product p:products) {
-                p.setCategory(c);
                 List<ProductImage> pis = productImageMapper.listByPid(p.getId());
-                for (ProductImage pi:pis) {
-                    pi.setP(p);
-                }
                 int sale;
                 if (null==orderItemMapper.getSaleCount(p.getId())){
                     sale = 0;
@@ -126,11 +121,19 @@ public class CategoryServiceImpl implements CategoryService {
         }
         List<Product> productList = productMapper.listByCid(id);
         for (Product p:productList) {
-            List<PropertyValue> propertyValues = propertyValueMapper.listByPid(p.getId());
-            for (PropertyValue pv:propertyValues) {
-                propertyValueMapper.delete(pv.getId());
+            List<ProductImage> pis = productImageMapper.listByPid(p.getId());
+            for (ProductImage pi:pis) {
+                productImageMapper.delete(pi.getId());
             }
             productMapper.delete(p.getId());
+        }
+        List<Property> properties = propertyMapper.listByCid(id);
+        for (Property pt:properties) {
+            List<PropertyValue> pvs = propertyValueMapper.listByPtid(pt.getId());
+            for (PropertyValue pv:pvs) {
+                propertyValueMapper.delete(pv.getId());
+            }
+            propertyMapper.delete(pt.getId());
         }
         categoryMapper.delete(id);
         session.commit();
@@ -146,11 +149,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryMapper.get(id);
         List<Product> products = productMapper.listByCid(id);
         for (Product p:products) {
-            p.setCategory(category);
             List<ProductImage> pis = productImageMapper.listByPid(p.getId());
-            for (ProductImage pi:pis) {
-                pi.setP(p);
-            }
             int reviewCount;
             if (null==reviewMapper.getTotalByPid(p.getId())){
                 reviewCount = 0;

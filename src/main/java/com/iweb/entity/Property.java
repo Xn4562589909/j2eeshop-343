@@ -11,7 +11,6 @@ public class Property {
     private int id;
     private String name;
     private Category category;
-    private int cid;
     private String gmtCreate;
     private String gmtModified;
 }

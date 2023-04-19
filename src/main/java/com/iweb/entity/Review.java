@@ -13,9 +13,8 @@ public class Review {
     private String content;
     private String createDate;
     private User user;
-    private int uid;
+    private String nickname;
     private Product product;
-    private int pid;
     private int id;
     private String gmtModified;
 }

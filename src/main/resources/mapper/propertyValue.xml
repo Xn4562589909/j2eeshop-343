@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.iweb.mapper.PropertyValueMapper">
+
+    <resultMap id="propertyValueBean" type="PropertyValue">
+        <id column="pvid" property="id" />
+        <result column="value" property="value" />
+        <result column="pvGmtModified" property="gmtModified" />
+        <result column="pvGmtCreate" property="gmtCreate" />
+        <association property="product" javaType="Product" >
+            <id column="pid" property="id" />
+            <result column="pname" property="name" />
+            <result column="subTitle" property="subTitle" />
+            <result column="originalPrice" property="originalPrice" />
+            <result column="promotePrice" property="promotePrice" />
+            <result column="stock" property="stock" />
+            <result column="createDate" property="createDate" />
+            <result column="pGmtModified" property="gmtModified" />
+            <association property="category" javaType="Category" >
+                <id column="cid" property="id" />
+                <result column="cname" property="name" />
+                <result column="cGmtCreate" property="gmtCreate" />
+                <result column="cGmtModified" property="gmtModified" />
+            </association>
+        </association>
+        <association property="property" javaType="Property" >
+            <id column="ptid" property="id" />
+            <result column="ptname" property="name" />
+            <result column="ptGmtCreate" property="gmtCreate" />
+            <result column="ptGmtModified" property="gmtModified" />
+            <association property="category" javaType="Category" >
+                <id column="cid" property="id" />
+                <result column="cname" property="name" />
+                <result column="cGmtCreate" property="gmtCreate" />
+                <result column="cGmtModified" property="gmtModified" />
+            </association>
+        </association>
+    </resultMap>
+
+    <insert id="add" parameterType="PropertyValue" useGeneratedKeys="true" keyProperty="id">
+        insert into propertyvalue(pid,`ptid`,`value`) values(#{product.id},#{property.id},#{value})
+    </insert>
+
+    <delete id="delete" parameterType="int">
+        delete from propertyvalue where id=#{id}
+    </delete>
+
+    <select id="get" parameterType="_int" resultMap="propertyValueBean" >
+        select pv.id 'pvid',pv.value 'value',pv.gmtCreate 'pvGmtCreate',pv.gmtModified 'pvGmtModified',
+        p.id 'pid',p.name 'pname',p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',
+        p.stock 'stock',p.createDate 'createDate',p.gmtModified 'pGmtModified',pt.id 'ptid',pt.name 'ptname',
+        pt.gmtCreate 'ptGmtCreate',pt.gmtModified 'ptGmtModified',c.id 'cid',c.name 'cname',c.gmtCreate 'cGmtCreate',
+        c.gmtModified 'cGmtModified' from propertyvalue pv left join product p on pv.pid = p.id left join property pt
+        on pv.ptid = pt.id left join category c on p.cid = c.id where pv.id=#{id}
+    </select>
+
+    <update id="update" parameterType="PropertyValue" >
+        update propertyvalue set pid=#{product.id},ptid=#{property.id},`value`=#{value},gmtModified=now() where id=#{id}
+    </update>
+
+    <select id="list" resultMap="propertyValueBean">
+        select pv.id 'pvid',pv.value 'value',pv.gmtCreate 'pvGmtCreate',pv.gmtModified 'pvGmtModified',
+        p.id 'pid',p.name 'pname',p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',
+        p.stock 'stock',p.createDate 'createDate',p.gmtModified 'pGmtModified',pt.id 'ptid',pt.name 'ptname',
+        pt.gmtCreate 'ptGmtCreate',pt.gmtModified 'ptGmtModified',c.id 'cid',c.name 'cname',c.gmtCreate 'cGmtCreate',
+        c.gmtModified 'cGmtModified' from propertyvalue pv left join product p on pv.pid = p.id left join property pt
+        on pv.ptid = pt.id left join category c on p.cid = c.id
+    </select>
+
+    <select id="getTotal" resultType="_int" >
+        select count(*) from propertyvalue
+    </select>
+
+    <select id="listByPid" resultMap="propertyValueBean" parameterType="_int" >
+        select pv.id 'pvid',pv.value 'value',pv.gmtCreate 'pvGmtCreate',pv.gmtModified 'pvGmtModified',
+        p.id 'pid',p.name 'pname',p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',
+        p.stock 'stock',p.createDate 'createDate',p.gmtModified 'pGmtModified',pt.id 'ptid',pt.name 'ptname',
+        pt.gmtCreate 'ptGmtCreate',pt.gmtModified 'ptGmtModified',c.id 'cid',c.name 'cname',c.gmtCreate 'cGmtCreate',
+        c.gmtModified 'cGmtModified' from propertyvalue pv left join product p on pv.pid = p.id left join property pt
+        on pv.ptid = pt.id left join category c on p.cid = c.id where pv.pid = #{pid}
+    </select>
+
+    <select id="listByPtid" resultMap="propertyValueBean" parameterType="_int" >
+        select pv.id 'pvid',pv.value 'value',pv.gmtCreate 'pvGmtCreate',pv.gmtModified 'pvGmtModified',
+        p.id 'pid',p.name 'pname',p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',
+        p.stock 'stock',p.createDate 'createDate',p.gmtModified 'pGmtModified',pt.id 'ptid',pt.name 'ptname',
+        pt.gmtCreate 'ptGmtCreate',pt.gmtModified 'ptGmtModified',c.id 'cid',c.name 'cname',c.gmtCreate 'cGmtCreate',
+        c.gmtModified 'cGmtModified' from propertyvalue pv left join product p on pv.pid = p.id left join property pt
+        on pv.ptid = pt.id left join category c on p.cid = c.id where pv.ptid = #{ptid}
+    </select>
+
+</mapper>

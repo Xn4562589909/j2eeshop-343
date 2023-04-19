@@ -20,7 +20,6 @@ public class Product {
     private String createDate;
     private Category category;
     private int id;
-    private int cid;
     private String gmtModified;
     // 评价数量属性和销量属性应该是基于你的订单信息获取的
     // select sum(num) from orderitem where pid = ? and oid != -1

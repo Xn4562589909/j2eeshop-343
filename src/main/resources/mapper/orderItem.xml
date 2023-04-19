@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.iweb.mapper.OrderItemMapper">
+
+    <resultMap id="orderItemBean" type="OrderItem">
+        <id column="oiid" property="id" />
+        <result column="number" property="number" />
+        <result column="gmtCreate" property="gmtCreate" />
+        <result column="gmtModified" property="gmtModified" />
+        <association property="product" javaType="Product">
+            <id column="pid" property="id" />
+            <result column="pname" property="name" />
+            <result column="subTitle" property="subTitle" />
+            <result column="originalPrice" property="originalPrice" />
+            <result column="promotePrice" property="promotePrice" />
+            <result column="stock" property="stock" />
+        </association>
+        <association property="order" javaType="Order" >
+            <id column="oid" property="id" />
+            <result column="orderCode" property="orderCode" />
+        </association>
+        <association property="user" javaType="User" >
+            <id column="uid" property="id" />
+            <result column="uname" property="name" />
+            <result column="password" property="password" />
+        </association>
+    </resultMap>
+
+    <insert id="add" parameterType="OrderItem" useGeneratedKeys="true" keyProperty="id">
+        insert into orderitem(pid,oid,uid,`number`) values(#{product.id},#{order.id},#{user.id},#{number})
+    </insert>
+
+    <delete id="delete" parameterType="int">
+        delete from orderitem where id = #{id}
+    </delete>
+
+    <select id="get" parameterType="_int" resultMap="orderItemBean">
+        select oi.id 'oiid',oi.`number` 'number',oi.gmtCreate 'gmtCreate',oi.gmtModified 'gmtModified',p.id 'pid',p.name 'pname',
+        p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',p.stock 'stock',o.id 'oid',
+        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password' from orderitem oi left join product p 
+        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id where oi.id = #{id}
+    </select>
+    
+    <update id="update" parameterType="OrderItem" >
+        update orderitem set pid=#{product.id},oid=#{order.id},uid=#{user.id},`number`=#{number},gmtModified=now()
+        where id = #{id}
+    </update>
+
+    <select id="list" resultMap="orderItemBean">
+        select oi.id 'oiid',oi.`number` 'number',oi.gmtCreate 'gmtCreate',oi.gmtModified 'gmtModified',p.id 'pid',p.name 'pname',
+        p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',p.stock 'stock',o.id 'oid',
+        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password' from orderitem oi left join product p
+        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id
+    </select>
+
+    <select id="getTotal" resultType="int" >
+        select count(*) from orderitem
+    </select>
+
+    <select id="listByUid" parameterType="_int" resultMap="orderItemBean" >
+        select oi.id 'oiid',oi.`number` 'number',oi.gmtCreate 'gmtCreate',oi.gmtModified 'gmtModified',p.id 'pid',p.name 'pname',
+        p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',p.stock 'stock',o.id 'oid',
+        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password' from orderitem oi left join product p
+        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id where oi.uid = #{uid} and oi.oid!=-1
+    </select>
+
+    <select id="getTotalByUid" resultType="int" parameterType="_int" >
+        select count(*) from orderitem where uid=#{uid} and oid!=-1
+    </select>
+
+    <select id="getCarCount" parameterType="_int" resultType="int" >
+        select count(*) from orderitem where uid=#{uid} and oid=-1
+    </select>
+
+    <select id="getSaleCount" resultType="int" parameterType="_int" >
+        select sum(`number`) from orderitem where oid!=-1 and pid=#{pid}
+    </select>
+
+    <select id="getCarOrderItemByPid" parameterType="_int" resultMap="orderItemBean" >
+        select oi.id 'oiid',oi.`number` 'number',oi.gmtCreate 'gmtCreate',oi.gmtModified 'gmtModified',p.id 'pid',p.name 'pname',
+        p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',p.stock 'stock',o.id 'oid',
+        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password' from orderitem oi left join product p
+        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id where oi.oid=-1 and oi.pid=#{pid}
+    </select>
+
+    <select id="listCar" parameterType="_int" resultMap="orderItemBean" >
+        select oi.id 'oiid',oi.`number` 'number',oi.gmtCreate 'gmtCreate',oi.gmtModified 'gmtModified',p.id 'pid',p.name 'pname',
+        p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',p.stock 'stock',o.id 'oid',
+        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password' from orderitem oi left join product p
+        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id where oi.oid=-1 and oi.uid=#{uid}
+    </select>
+
+    <select id="listByOid" parameterType="_int" resultMap="orderItemBean" >
+        select oi.id 'oiid',oi.`number` 'number',oi.gmtCreate 'gmtCreate',oi.gmtModified 'gmtModified',p.id 'pid',p.name 'pname',
+        p.subTitle 'subTitle',p.originalPrice 'originalPrice',p.promotePrice 'promotePrice',p.stock 'stock',o.id 'oid',
+        o.orderCode 'orderCode',u.id 'uid',u.name 'uname',u.password 'password' from orderitem oi left join product p
+        on oi.pid = p.id left join order_ o on oi.oid =o.id left join `user` u on oi.uid = u.id where oi.oid=#{oid}
+    </select>
+</mapper>

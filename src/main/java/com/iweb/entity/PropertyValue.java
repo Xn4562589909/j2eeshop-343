@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 public class PropertyValue {
     private String value;
     private Product product;
-    private int pid;
     private Property property;
-    private int ptid;
     private int id;
     private String gmtCreate;
     private String gmtModified;
